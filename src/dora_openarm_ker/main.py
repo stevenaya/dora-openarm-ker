@@ -69,20 +69,20 @@ def main():
 
         # Main process
         m5_port.fetch_present_status_bulk()
-        right_position = m5_port.present_position[:8]
-        left_position = m5_port.present_position[8:16]
+        position_right = m5_port.present_position[:8]
+        position_left = m5_port.present_position[8:16]
 
-        right_radian = np.deg2rad(right_position)
+        right_radian = np.deg2rad(position_right)
         right_follower_position = right_mapper.map(right_radian)
-        left_radian = np.deg2rad(left_position)
+        left_radian = np.deg2rad(position_left)
         left_follower_position = left_mapper.map(left_radian)
 
         joystick_x = m5_port.get_joystick_x()
         joystick_y = m5_port.get_joystick_y()
         joystick_button = m5_port.get_joystick_button()
 
-        node.send_output("position_right", pa.array(right_position, type=pa.float32()))
-        node.send_output("position_left", pa.array(left_position, type=pa.float32()))
+        node.send_output("position_right", pa.array(position_right, type=pa.float32()))
+        node.send_output("position_left", pa.array(position_left, type=pa.float32()))
 
         node.send_output(
             "right_follower_position",
