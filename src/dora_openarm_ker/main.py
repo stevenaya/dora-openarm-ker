@@ -50,13 +50,13 @@ def main():
 
     m5_port = openarm_ker.m5_port.M5Port(args.device, num_sensors=16, mode=args.mode)
     right_leader_joint_names = [f"right_arm_joint{i}" for i in range(1, 9)]
-    right_mapper = openarm_ker.mapper.Mapper(
+    mapper_right = openarm_ker.mapper.Mapper(
         leader_joint_names=right_leader_joint_names,
         mapping_key="right_arm_mappings",
         mappingyaml_path=args.config,
     )
     left_leader_joint_names = [f"left_arm_joint{i}" for i in range(1, 9)]
-    left_mapper = openarm_ker.mapper.Mapper(
+    mapper_left = openarm_ker.mapper.Mapper(
         leader_joint_names=left_leader_joint_names,
         mapping_key="left_arm_mappings",
         mappingyaml_path=args.config,
@@ -72,10 +72,10 @@ def main():
         position_right = m5_port.present_position[:8]
         position_left = m5_port.present_position[8:16]
 
-        right_radian = np.deg2rad(position_right)
-        right_follower_position = right_mapper.map(right_radian)
-        left_radian = np.deg2rad(position_left)
-        left_follower_position = left_mapper.map(left_radian)
+        radian_right = np.deg2rad(position_right)
+        follower_position_right = mapper_right.map(radian_right)
+        radian_left = np.deg2rad(position_left)
+        follower_position_left = mapper_left.map(radian_left)
 
         joystick_x = m5_port.get_joystick_x()
         joystick_y = m5_port.get_joystick_y()
@@ -85,12 +85,12 @@ def main():
         node.send_output("position_left", pa.array(position_left, type=pa.float32()))
 
         node.send_output(
-            "right_follower_position",
-            pa.array(right_follower_position, type=pa.float32()),
+            "follower_position_right",
+            pa.array(follower_position_right, type=pa.float32()),
         )
         node.send_output(
-            "left_follower_position",
-            pa.array(left_follower_position, type=pa.float32()),
+            "follower_position_left",
+            pa.array(follower_position_left, type=pa.float32()),
         )
 
         node.send_output("joystick_x", pa.array([joystick_x], type=pa.float32()))
