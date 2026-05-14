@@ -81,8 +81,8 @@ def main():
         joystick_y = m5_port.get_joystick_y()
         joystick_button = m5_port.get_joystick_button()
 
-        node.send_output("right_position", pa.array(right_position, type=pa.float32()))
-        node.send_output("left_position", pa.array(left_position, type=pa.float32()))
+        node.send_output("position_right", pa.array(right_position, type=pa.float32()))
+        node.send_output("position_left", pa.array(left_position, type=pa.float32()))
 
         node.send_output(
             "right_follower_position",
